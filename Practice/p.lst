@@ -1,0 +1,106 @@
+     1                                  section .data
+     2 00000000 256400                  	input db"%d",0
+     3 00000003 656E7465722073697A-     	msg1 db "enter size of array",10,0
+     3 0000000C 65206F662061727261-
+     3 00000015 790A00             
+     4 00000018 7468652073697A6520-     	msg2 db "the size of array is %d",10,0
+     4 00000021 6F6620617272617920-
+     4 0000002A 69732025640A00     
+     5 00000031 656E74657220746865-     	msg3 db "enter the array elements",10,0
+     5 0000003A 20617272617920656C-
+     5 00000043 656D656E74730A00   
+     6 0000004B 617272617920656C65-     	msg4 db "array elements are %d",10,0
+     6 00000054 6D656E747320617265-
+     6 0000005D 2025640A00         
+     7 00000062 7468652073756D206F-     	msg5 db "the sum of array is %d",10,0
+     7 0000006B 662061727261792069-
+     7 00000074 732025640A00       
+     8                                  section .bss
+     9 00000000 ????????                	n resd 1
+    10 00000004 <res 28h>               	array resd 10
+    11                                  section .text
+    12                                  	global main
+    13                                  	extern printf,scanf
+    14                                  main:
+    15 00000000 68[03000000]            	push msg1
+    16 00000005 E8(00000000)            	call printf
+    17 0000000A 83C404                  	add esp,4
+    18                                  	
+    19 0000000D 68[00000000]            	push n
+    20 00000012 68[00000000]            	push input
+    21 00000017 E8(00000000)            	call scanf
+    22 0000001C 83C408                  	add esp,8
+    23                                  	
+    24 0000001F FF35[00000000]          	push dword[n]
+    25 00000025 68[18000000]            	push msg2
+    26 0000002A E8(00000000)            	call printf
+    27 0000002F 83C408                  	add esp,8
+    28                                  	
+    29 00000032 68[31000000]            	push msg3
+    30 00000037 E8(00000000)            	call printf
+    31 0000003C 83C404                  	add esp,4
+    32                                  	
+    33 0000003F 31C9                    	xor ecx,ecx
+    34                                  scan:
+    35 00000041 BB[04000000]            	mov ebx,array
+    36 00000046 B804000000              	mov eax,4
+    37 0000004B F7E1                    	mul ecx
+    38 0000004D 01C3                    	add ebx,eax
+    39                                  	
+    40 0000004F 60                      	pusha
+    41 00000050 53                      	push ebx
+    42 00000051 68[00000000]            	push input
+    43 00000056 E8(00000000)            	call scanf
+    44 0000005B 83C408                  	add esp,8
+    45 0000005E 61                      	popa
+    46                                  	
+    47 0000005F 41                      	inc ecx
+    48 00000060 3B0D[00000000]          	cmp ecx,dword[n]
+    49 00000066 7CD9                    	jl scan
+    50                                  	
+    51 00000068 31C9                    	xor ecx,ecx
+    52                                  print:
+    53 0000006A BB[04000000]            	mov ebx,array
+    54 0000006F B804000000              	mov eax,4
+    55 00000074 F7E1                    	mul ecx
+    56 00000076 01C3                    	add ebx,eax
+    57                                  	
+    58 00000078 60                      	pusha
+    59 00000079 FF33                    	push dword[ebx]
+    60 0000007B 68[4B000000]            	push msg4
+    61 00000080 E8(00000000)            	call printf
+    62 00000085 83C408                  	add esp,8
+    63 00000088 61                      	popa
+    64                                  	
+    65 00000089 41                      	inc ecx
+    66 0000008A 3B0D[00000000]          	cmp ecx,dword[n]
+    67 00000090 7CD8                    	jl print
+    68                                  	
+    69 00000092 31FF                    	xor edi,edi
+    70 00000094 31C9                    	xor ecx,ecx
+    71                                  sum:
+    72 00000096 BB[04000000]            	mov ebx,array
+    73 0000009B B804000000              	mov eax,4
+    74 000000A0 F7E1                    	mul ecx
+    75 000000A2 01C3                    	add ebx,eax
+    76                                  	
+    77                                  	
+    78 000000A4 033B                    	add edi,dword[ebx]
+    79                                  	
+    80 000000A6 41                      	inc ecx
+    81 000000A7 3B0D[00000000]          	cmp ecx,dword[n]
+    82 000000AD 7CE7                    	jl sum 
+    83 000000AF 60                      	pusha
+    84 000000B0 57                      	push edi
+    85 000000B1 68[62000000]            	push msg5
+    86 000000B6 E8(00000000)            	call printf
+    87 000000BB 83C408                  	add esp,8
+    88 000000BE 61                      	popa
+    89                                  	
+    90                                  	
+    91                                  	
+    92 000000BF C3                      	ret
+    93                                  	
+    94                                  	
+    95                                  	
+    96                                  	

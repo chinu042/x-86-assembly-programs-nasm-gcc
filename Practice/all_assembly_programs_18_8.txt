@@ -1,0 +1,193 @@
+Assembly program list:-
+
+Q. Print array elements.
+C program:-
+
+#include<stdio.h>
+
+void main(){
+        int arr[] = {10,20,30,40,-1};
+        int i = 0;
+        while(arr[i] != -1){
+                printf("Input number is %d\n",arr[i]);
+                i++;
+        }
+}
+
+Asm program:-
+;; Assembly program to print array elements
+	section .data
+	Array dd 10,20,30,40,-1
+	msg db "Input number is %d",10,0
+	section .text
+	global main
+	extern printf
+main:
+	xor ecx,ecx 		;;make ecx 0
+lp:	
+	mov ebx,Array 		;;Put address of array in ebx
+	mov eax,4 		;;size
+	mul ecx 		;;(index*size)
+	add ebx,eax 		;;base + mulResult
+	cmp dword[ebx],-1
+	jz endof
+	pusha			;; pushing all register values in stack
+	push dword[ebx]
+	push msg 
+	call printf
+	add esp,8
+	popa			;; poping back all previous register values
+	inc ecx
+	jmp lp
+endof:	
+	ret
+
+
+*************************************************************************************	
+Q. Program to print addition of array elements
+c program:-
+#include<stdio.h>
+
+void main(){
+	int arr[] = {10,20,30,40,-1};
+	int i = 0;
+	int sum = 0;
+	while(arr[i] != -1){
+		sum += arr[i];
+		i++;
+	}
+	printf("%d\n",sum);
+}
+
+
+asm program:-
+;; Assembly program to addition of array elements	
+	section .data
+	Array dd 10,20,30,40,-1
+	msg db "Input number is %d",10,0
+	section .text
+	global main
+	extern printf
+main:
+	xor ecx,ecx 		;;make ecx 0
+	xor esi,esi
+lp:	
+	mov ebx,Array 		;;Put address of array in ebx
+	mov eax,4 		;;size
+	mul ecx 		;;(index*size)
+	add ebx,eax 		;;base + mulResult
+	cmp dword[ebx],-1
+	jz endof
+	add esi,dword[ebx]
+	pusha			;; pushing all register values in stack
+	popa			;; poping back all previous register values
+	inc ecx
+	jmp lp
+endof:	
+	push esi
+	push msg 
+	call printf
+	add esp,8
+	
+	ret
+
+
+*************************************************************************************
+Q. Maximum element in array.
+C program:-
+#include<stdio.h>
+
+void main(){
+	int arr[] = {10,20,30,40,-1};
+	int i = 0;
+	int max = -1;
+	while(arr[i] != -1){
+		if(arr[i] > max)
+			max = arr[i];
+		i++;
+	}
+	printf("%d\n",max);
+}
+
+asm program:-
+;; Assembly program to maximum of array elements	
+	section .data
+	Array dd 10,400,30,40,-1
+	msg db "maximum number is %d",10,0
+	section .text
+	global main
+	extern printf
+main:
+	xor ecx,ecx 		;;make ecx 0
+	mov esi,-2
+lp:	
+	mov ebx,Array 		;;Put address of array in ebx
+	mov eax,4 		;;size
+	mul ecx 		;;(index*size)
+	add ebx,eax 		;;base + mulResult
+	cmp dword[ebx],-1
+	jz endof
+	cmp dword[ebx],esi	;; if(dword[ebx] < esi)
+	jng lp1			;;Jump if not greater (If dword is small, then this line is skipped)
+	mov esi,dword[ebx]	;; if dword is not greater then program will directly jump to inc ecx else it run this 
+				;;line and then go inc ecx
+lp1:
+	inc ecx
+	jmp lp
+endof:	
+	push esi
+	push msg 
+	call printf
+	add esp,8
+
+	ret
+
+*************************************************************************************
+Q. Minimum element in array.
+C program:-
+#include<stdio.h>
+
+void main(){
+	int arr[] = {10,20,30,40,-1};
+	int i = 0;
+	int max = arr[0];
+	while(arr[i] != -1){
+		if(arr[i] < max)
+			max = arr[i];
+		i++;
+	}
+	printf("%d\n",max);
+}
+
+asm program:-
+;; Assembly program to print smallest number in the array
+	section .data
+	Array dd 20,5,10,40,-1
+	msg db "Minimum number is %d",10,0
+	section .text
+	global main
+	extern printf
+main:
+	xor ecx,ecx		;;making ecx 0
+	mov esi,dword[Array]	;;putting first value of array in esi
+lp:
+	mov ebx,Array		;;ebx will store base address of array
+	mov eax,4
+	mul ecx			;; ecx = eax*ecx
+	add ebx,eax		;; ebx = ebx+ecx
+	cmp dword[ebx],-1
+	jz endof		;;jump to endof if array element is -1
+	cmp dword[ebx],esi
+	jnl lp1			;;jump if not less
+	mov esi,dword[ebx]
+lp1:
+	inc ecx
+	jmp lp
+endof:
+	push esi
+	push msg
+	call printf
+	add esp,8
+	ret
+	
+
